@@ -1,4 +1,5 @@
 //#define STB_IMAGE_RESIZE_IMPLEMENTATION
+//#include "GLFW/glfw3.h"
 #include "stb_image.h"
 
 #include "texture.h"
@@ -19,7 +20,7 @@ texture::texture(const std::string& filepath, std::string a_type, std::string a_
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	std::cout << "Image received (maybe)! Height: " << m_img.height() << " Width: " << m_img.width() << "\n";
+	//std::cout << "Image received (maybe)! Height: " << m_img.height() << " Width: " << m_img.width() << "\n";
 
 	if (m_img.isLoaded()) {
 		if (m_img.channels() == 4) {
@@ -29,10 +30,10 @@ texture::texture(const std::string& filepath, std::string a_type, std::string a_
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_img.width(), m_img.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, (void*)m_img.getData());
 		}
 		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "Texture " << filepath << " succesfully loaded" << std::endl;
+		std::cout << "Texture " << filepath << " succesfully loaded\n" << std::endl;
 	} 
 	else {
-		std::cout << "Warning! Something went wrong, texture " << filepath << " not loaded" << std::endl;
+		std::cout << "Warning! Something went wrong, texture " << filepath << " not loaded\n" << std::endl;
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -50,15 +51,15 @@ texture::texture(const image& img, std::string a_type, std::string a_name) :
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	std::cout << "Image received (maybe)! Height: " << m_img.height() << " Width: " << m_img.width() << "\n";
+	//std::cout << "Image received (maybe)! Height: " << m_img.height() << " Width: " << m_img.width() << "\n";
 
 	if (m_img.isLoaded()) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_img.width(), m_img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)m_img.getData());
 		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "Texture " << m_img.filepath() << " succesfully loaded" << std::endl;
+		std::cout << "Texture " << m_img.filepath() << " succesfully loaded\n" << std::endl;
 	}
 	else {
-		std::cout << "Warning! Something went wrong, texture " << m_img.filepath() << " not loaded" << std::endl;
+		std::cout << "Warning! Something went wrong, texture " << m_img.filepath() << " not loaded\n" << std::endl;
 	}
 
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -66,9 +67,11 @@ texture::texture(const image& img, std::string a_type, std::string a_name) :
 
 texture::~texture()
 {
-	std::cout << "Texture " << m_img.filepath() << " was destroyed. Bye bye, texture!\n";
+	std::cout << "Texture " << m_img.filepath() << " was destroyed.\n";
+
+	this->unbind();
 	glDeleteTextures(1, &m_rendererId);
- 	m_img.~image();
+ 	//m_img.~image(); //not needed
 }
 
 void texture::bind(unsigned int slot) const

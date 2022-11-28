@@ -123,7 +123,7 @@ shader::ShaderSource shader::shaderParser(const std::string& sourcePath)
         }
     }
 		
-		std::cout << "\n!SHADER DEBUG!\n" << "Shader 1: " << ss[0].str() << "\nShader 2: " << ss[0].str() << "\n"; 
+		//std::cout << "\n!SHADER DEBUG!\n" << "Shader 1: " << ss[0].str() << "\nShader 2: " << ss[0].str() << "\n"; 
 
     return { ss[0].str(), ss[1].str() };
 }
@@ -150,7 +150,7 @@ unsigned int shader::compileShader(const std::string& source, unsigned int type)
         glDeleteShader(id);
         return 0;
     }
-    else if (result = GL_TRUE) std::cout <<  " Shader " << m_filepath << " is compiled!\n";
+    else if (result == GL_TRUE) std::cout <<  " Shader " << m_filepath << " is compiled!\n";
 
     return id;
 }

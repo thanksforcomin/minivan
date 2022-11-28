@@ -2,6 +2,7 @@
 #define GLEW_STATIC
 #include "renderer.h"
 #include <vector>
+
 struct vertexBufferElement
 {
 	unsigned int type;
@@ -37,7 +38,7 @@ public:
 	template<typename T>
 	inline void push(unsigned int count)
 	{
-		static_assert(![]{});
+		static_assert(![]{}, "go fuck yourself");
 	}
 
 	inline unsigned int getStride() const { return m_Stride; }

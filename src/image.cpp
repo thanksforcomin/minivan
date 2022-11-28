@@ -76,11 +76,11 @@ image::image(image&& source) {
 }
 
 image::~image() {
-	std::cout << "Image " << &m_imageId << " is destroyed. Bye bye, image.\n";
+	std::cout << "Image " << &m_imageId << " is destroyed.\n";
 	if (m_data != NULL) {
 		if (m_data != nullptr)	{
 			stbi_image_free(m_data);
-			//std::cout << "Free'd " << m_width * m_height * m_colorChannels << " bytes\n";
+			std::cout << "Free'd " << m_width * m_height * m_colorChannels << " bytes\n\n";
 		}
 	}
 }

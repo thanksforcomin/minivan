@@ -1,5 +1,6 @@
 #pragma once
 
+#include "glm/fwd.hpp"
 #define GLEW_STATIC
 #include "renderer.h"
 
@@ -32,11 +33,11 @@ public:
 
 	}
 
-	void resize(Vector3 parameter) {
+	void resize(glm::vec3 parameter) {
 		m_model = glm::scale(m_model, parameter);
 	}
 
-	void rotate(Vector3 rotation, float angle) {
+	void rotate(glm::vec3 rotation, float angle) {
 		m_model = glm::rotate(m_model, angle, rotation);
 	}
 
