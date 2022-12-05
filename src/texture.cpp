@@ -5,13 +5,15 @@
 #include "texture.h"
 #include "renderer.h"
 
+#include <exception>
 #include <iostream>
 #include <future>
 
 texture::texture(const std::string& filepath, std::string a_type, std::string a_name) :
 	m_rendererId(0),
 	m_img(filepath),
-	type(a_type)
+	type(a_type),
+	name(a_name)
 {
 	glGenTextures(1, &m_rendererId);
 	glBindTexture(GL_TEXTURE_2D, m_rendererId);
@@ -42,7 +44,8 @@ texture::texture(const std::string& filepath, std::string a_type, std::string a_
 texture::texture(const image& img, std::string a_type, std::string a_name) :
 	m_rendererId(0),
 	m_img(img),
-	type(a_type)
+	type(a_type),
+	name(a_name)
 {
 	glGenTextures(1, &m_rendererId);
 	glBindTexture(GL_TEXTURE_2D, m_rendererId);
@@ -69,18 +72,33 @@ texture::~texture()
 {
 	std::cout << "Texture " << m_img.filepath() << " was destroyed.\n";
 
-	this->unbind();
-	glDeleteTextures(1, &m_rendererId);
+	try {
+		this->unbind();
+		glDeleteTextures(1, &m_rendererId);\
+	}
+	catch (std::exception& e) {
+		std::cerr << "\t!ERROR!\n\tException at Texture destructor\n\t\t" << e.what() << "\n";
+	}
  	//m_img.~image(); //not needed
 }
 
 void texture::bind(unsigned int slot) const
-{
-	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, m_rendererId);
+{ 
+	try {
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, m_rendererId);
+	}
+	catch (std::exception& e) {
+		std::cerr << "\t!ERROR!\n\tException at Texture binder\n\t\t" << e.what() << "\n"; 
+	}
 }
 
 void texture::unbind() const
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	try {
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	catch (std::exception& e) {
+		std::cerr << "\t!ERROR!\n\tException at Texture unbinder\n\t\t" << e.what() << "\n"; 
+	}
 }

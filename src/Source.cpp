@@ -1,4 +1,5 @@
-#define GLEW_STATIC
+//#include "GLFW/glfw3.h"
+//#define GLEW_STATIC
 #include "renderer.h"
 
 #include <string.h>
@@ -31,7 +32,7 @@
 using namespace std::placeholders;
 
 int main(void)
-{
+{{
   typedef glm::vec3 Vector3;
 	typedef glm::mat4 Matrix4;
 
@@ -40,7 +41,7 @@ int main(void)
   float deltaTime = 0;
   float lastTime = 0;
   float currTime = 0;
-  char err_buffer;
+  //char err_buffer;
 
   GLFWwindow* window = 0;
 
@@ -168,10 +169,10 @@ int main(void)
   Controls controller;
   controller.bindCursor(std::bind(&Camera::cameraMouseInput, &cam, _1, _2, _3));
 
-  void* example_data = new char;
+  //void* example_data = new char;
 
   glm::vec3 lightColor(1.0, 1.0, 1.0);
-  float ambient_strenght = 1.0;
+  //float ambient_strenght = 1.0;
 
   texture tx("../res/Textures/container.png");
   texture tx_specular("../res/Textures/container_specular.png");
@@ -261,13 +262,15 @@ int main(void)
   }
 
   tx.~texture();
-	tx_emission.~texture();
 	tx_specular.~texture();
+	tx_emission.~texture();
 
   sh.~shader();
-	
   std::cout << "Application closed\n";
-    
+  std::cout << (glfwGetCurrentContext()) << "\n";}
   glfwTerminate();
+
+	std::cout << (glfwGetCurrentContext()) << "\n";
+
   return 0;
 }

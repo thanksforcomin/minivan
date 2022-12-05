@@ -16,12 +16,11 @@ int m_width, m_height, m_colorChanels; variables of image itself */
 image::image(const std::string& filepath) :
 	m_filepath(filepath),
 	m_width(0), m_height(0),
-	m_data(nullptr),
 	m_colorChannels(0),
+	m_data(stbi_load(filepath.c_str(), &m_width, &m_height, &m_colorChannels, 0)),
 	m_imageId(0)
 {
 	stbi_set_flip_vertically_on_load(true);
-	m_data = stbi_load(m_filepath.c_str(), &m_width, &m_height, &m_colorChannels, 0);
 	if (m_data == NULL) {
 		std::cout << "Fuck off ur image not loading\n";
 	}
@@ -33,12 +32,11 @@ image::image(const std::string& filepath) :
 image::image(const std::string& filepath, const int& width, const int& height) :
 	m_filepath(filepath),
 	m_width(0), m_height(0),
-	m_data(nullptr),
+	m_data(stbi_load(filepath.c_str(), &m_width, &m_height, &m_colorChannels, 0)),
 	m_colorChannels(0),
 	m_imageId(0)
 {
 	stbi_set_flip_vertically_on_load(true);
-	m_data = stbi_load(m_filepath.c_str(), &m_width, &m_height, &m_colorChannels, 0);
 	if (m_data == NULL) {
 		std::cout << "Fuck off ur image not loading\n";
 	}

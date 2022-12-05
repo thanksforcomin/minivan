@@ -1,8 +1,10 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <cstring>
 #include <iostream>
+#include <memory.h>
 
 #include "stb_image.h"
 
@@ -10,10 +12,10 @@ class image
 {
 private:
 	std::string m_filepath; //a filepath, how unobvious
-	unsigned char* m_data; //local data buffer
 	int m_width;
 	int m_height;
 	int m_colorChannels; //variables of image itself
+	unsigned char* m_data; //local data buffer
 public:
 	int m_imageId; //debug info
 

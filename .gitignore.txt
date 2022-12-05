@@ -1,0 +1,9 @@
+build/
+glm/glm-master/doc/
+stb-master/stb-master/docs/
+stb-master/stb-master/tests/
+.cache/clangd/index/
+*doc*/
+
+
+!src
