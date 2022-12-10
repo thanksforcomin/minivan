@@ -32,7 +32,7 @@
 using namespace std::placeholders;
 
 int main(void)
-{{
+{ {
   typedef glm::vec3 Vector3;
 	typedef glm::mat4 Matrix4;
 
@@ -261,13 +261,14 @@ int main(void)
       glfwPollEvents();
   }
 
-  tx.~texture();
-	tx_specular.~texture();
-	tx_emission.~texture();
+  //tx.~texture();
+	//tx_specular.~texture();
+	//tx_emission.~texture();
 
-  sh.~shader();
+  //sh.~shader();
   std::cout << "Application closed\n";
-  std::cout << (glfwGetCurrentContext()) << "\n";}
+  std::cout << (glfwGetCurrentContext()) << "\n";
+	}
   glfwTerminate();
 
 	std::cout << (glfwGetCurrentContext()) << "\n";
