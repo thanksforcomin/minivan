@@ -6,6 +6,12 @@
 #include <vulkan/vulkan_core.h>
 
 namespace engine {
+  VulkanContext::VulkanContext(struct SDL_Window *window,
+                               const ContextOptions &options) 
+  {
+    init(window, options);
+  }
+  
   auto VulkanContext::init(struct SDL_Window* window, bool use_validation_layers) -> void {
     vkb::InstanceBuilder builder;
 
@@ -42,7 +48,15 @@ namespace engine {
                                          .select()
                                          .value();
 
-    
+    vkb::DeviceBuilder device_builder{phy_device};
+    vkb::Device vkb_device = device_builder.build().value();
+
+    device_.device = vkb_device.device;
+    device_.phy_device = phy_device.physical_device;
+
+    graphics_queue_ = vkb_device.get_queue(vkb::QueueType::graphics).value();
+    graphics_queue_family_ =
+      vkb_device.get_queue_index(vkb::QueueType::graphics).value();
   }
   
 }
