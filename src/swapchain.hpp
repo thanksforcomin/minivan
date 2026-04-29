@@ -30,7 +30,9 @@ namespace engine {
     auto operator=(const Swapchain &) -> Swapchain & = delete;
 
     Swapchain(Swapchain &&) noexcept;
-    auto operator=(Swapchain&&) noexcept -> Swapchain&;
+    auto operator=(Swapchain &&) noexcept -> Swapchain &;
+
+    ~Swapchain();
     
   private:
     auto create_swapchain(uint32_t width, uint32_t height) -> void;

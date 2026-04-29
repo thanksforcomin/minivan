@@ -33,20 +33,59 @@ namespace engine {
                      std::move(swapchain_image_views), context.device_,
                      context.surface_);
   }
-  
+
   Swapchain::Swapchain(VkSwapchainKHR swapchain, VkFormat image_format,
                        VkExtent2D swapchain_extent,
                        std::vector<VkImage> &&swapchain_images,
                        std::vector<VkImageView> &&swapchain_image_views,
                        VulkanDevice device, VkSurfaceKHR surface)
-  : swapchain_(swapchain), swapchain_image_format_(image_format),
-    swapchain_extent_(swapchain_extent),
-    swapchain_images_(
-                      std::forward<decltype(swapchain_images)>(swapchain_images)),
-    swapchain_image_views_(
-                           std::forward<decltype(swapchain_image_views)>(swapchain_image_views)),
-    device_(device), surface_(surface) {
-    
+      : swapchain_(swapchain), swapchain_image_format_(image_format),
+        swapchain_extent_(swapchain_extent),
+        swapchain_images_(
+            std::forward<decltype(swapchain_images)>(swapchain_images)),
+        swapchain_image_views_(std::forward<decltype(swapchain_image_views)>(
+            swapchain_image_views)),
+        device_(device), surface_(surface) {}
+
+  Swapchain::Swapchain(Swapchain &&other) noexcept
+      : swapchain_(other.swapchain_),
+        swapchain_image_format_(other.swapchain_image_format_),
+        swapchain_extent_(other.swapchain_extent_),
+        swapchain_images_(std::move(other.swapchain_images_)),
+        swapchain_image_views_(std::move(other.swapchain_image_views_)),
+        device_(other.device_), surface_(other.surface_)
+  {
+    other.swapchain_ = VK_NULL_HANDLE;
+    other.swapchain_image_format_ = VK_FORMAT_UNDEFINED;
+    other.swapchain_extent_ = {0, 0};
+    other.swapchain_images_.clear();
+    other.swapchain_image_views_.clear();
+  }
+
+  auto Swapchain::operator=(Swapchain &&other) noexcept -> Swapchain & {
+    if (this != &other) {
+      destroy_swapchain();
+      
+      swapchain_ = other.swapchain_;
+      swapchain_image_format_ = other.swapchain_image_format_;
+      swapchain_extent_ = other.swapchain_extent_;
+      swapchain_images_ = std::move(other.swapchain_images_);
+      swapchain_image_views_ = std::move(other.swapchain_image_views_);
+      
+      device_ = other.device_;
+      surface_ = other.surface_;
+      
+      other.swapchain_ = VK_NULL_HANDLE;
+      other.swapchain_image_format_ = VK_FORMAT_UNDEFINED;
+      other.swapchain_extent_ = {0, 0};
+      other.swapchain_images_.clear();
+      other.swapchain_image_views_.clear();
+    }
+    return *this;
+  }
+  
+  Swapchain::~Swapchain() {
+    destroy_swapchain();
   }
   
   auto Swapchain::create_swapchain(uint32_t width, uint32_t height) -> void

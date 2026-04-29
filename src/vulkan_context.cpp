@@ -5,6 +5,8 @@
 #include <VkBootstrap.h>
 #include <vulkan/vulkan_core.h>
 
+#include <print>
+
 namespace engine {
 
   auto VulkanContext::init(SDL_Window *window,
@@ -84,16 +86,16 @@ namespace engine {
         compute_queue_(compute_queue), transport_queue_(transport_queue),
         debug_messenger_(debug_messenger),
         graphics_queue_family_(graphics_queue_family) {}
-  
-  VulkanContext::VulkanContext(VulkanContext&& other) noexcept
-  : instance_(other.instance_),
-    surface_(other.surface_),
-    device_(std::move(other.device_)),
-    graphics_queue_(other.graphics_queue_),
-    present_queue_(other.present_queue_),
-    debug_messenger_(other.debug_messenger_),
-    graphics_queue_family_(other.graphics_queue_family_)
-  {
+
+  VulkanContext::VulkanContext(VulkanContext &&other) noexcept
+      : instance_(other.instance_), surface_(other.surface_),
+        device_(std::move(other.device_)),
+        graphics_queue_(other.graphics_queue_),
+        present_queue_(other.present_queue_),
+        debug_messenger_(other.debug_messenger_),
+        graphics_queue_family_(other.graphics_queue_family_) {
+    other.device_.device = VK_NULL_HANDLE;
+    other.device_.phy_device = VK_NULL_HANDLE;
     other.instance_ = VK_NULL_HANDLE;
     other.surface_ = VK_NULL_HANDLE;
     other.graphics_queue_ = VK_NULL_HANDLE;
@@ -102,11 +104,12 @@ namespace engine {
     other.graphics_queue_family_ = 0;
   }
   
-  VulkanContext& VulkanContext::operator=(VulkanContext&& other) noexcept {
-    if (this == &other) return *this;
+  auto VulkanContext::operator=(VulkanContext&& other) noexcept -> VulkanContext& {
+    if (this == &other)
+      return *this;
     
     if (debug_messenger_ != VK_NULL_HANDLE && instance_ != VK_NULL_HANDLE)
-      vkDestroyDebugUtilsMessengerEXT(instance_, debug_messenger_, nullptr);
+      vkb::destroy_debug_utils_messenger(instance_, debug_messenger_);
     
     if (surface_ != VK_NULL_HANDLE && instance_ != VK_NULL_HANDLE)
       vkDestroySurfaceKHR(instance_, surface_, nullptr);
@@ -122,6 +125,7 @@ namespace engine {
     debug_messenger_ = other.debug_messenger_;
     graphics_queue_family_ = other.graphics_queue_family_;
 
+    other.device_.device = VK_NULL_HANDLE;
     other.instance_ = VK_NULL_HANDLE;
     other.surface_ = VK_NULL_HANDLE;
     other.graphics_queue_ = VK_NULL_HANDLE;
@@ -131,24 +135,28 @@ namespace engine {
 
     return *this;
   }
-  
 
   VulkanContext::~VulkanContext() {
-    if (debug_messenger_ != VK_NULL_HANDLE && instance_ != VK_NULL_HANDLE) {
-        vkDestroyDebugUtilsMessengerEXT(instance_, debug_messenger_, nullptr);
-        debug_messenger_ = VK_NULL_HANDLE;
+    if (surface_ != VK_NULL_HANDLE && instance_ != VK_NULL_HANDLE) {
+      vkDestroySurfaceKHR(instance_, surface_, nullptr);
+      surface_ = VK_NULL_HANDLE;
     }
 
-    if (surface_ != VK_NULL_HANDLE && instance_ != VK_NULL_HANDLE) {
-        vkDestroySurfaceKHR(instance_, surface_, nullptr);
-        surface_ = VK_NULL_HANDLE;
+    if (device_.device != VK_NULL_HANDLE) {
+      vkDeviceWaitIdle(device_.device);
+      vkDestroyDevice(device_.device, nullptr);
+      device_.device = VK_NULL_HANDLE;
+    }
+    
+    if (debug_messenger_ != VK_NULL_HANDLE && instance_ != VK_NULL_HANDLE) {
+      vkb::destroy_debug_utils_messenger(instance_, debug_messenger_);
+      debug_messenger_ = VK_NULL_HANDLE;
     }
 
     if (instance_ != VK_NULL_HANDLE) {
-        vkDestroyInstance(instance_, nullptr);
-        instance_ = VK_NULL_HANDLE;
+      vkDestroyInstance(instance_, nullptr);
+      instance_ = VK_NULL_HANDLE;
     }
-    
   }
   
 }

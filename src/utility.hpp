@@ -4,6 +4,6 @@
 #include <string_view>
 
 namespace utils {
-  template <typename T>
-  using Result = std::expected<T, std::string_view>;
+  template <typename T> using Result = std::expected<T, std::string_view>;
+
 }

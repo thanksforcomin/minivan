@@ -2,7 +2,7 @@
   description = "a nix flake for the stuff";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -22,6 +22,7 @@
             libGL
             libglvnd
             mesa
+            vk-bootstrap
           ];
 
           packages = with pkgs; [
@@ -39,6 +40,13 @@
             # GLM (math)
             glm
 
+            # SDL
+            SDL2
+            SDL2.dev
+
+            # Assimp
+            assimp
+            
             # OpenGL
             libGL
             libGLU
@@ -50,12 +58,18 @@
             xorg.libXext
             xorg.libXrandr
             xorg.libXcursor
+            xorg.libXinerama
             xorg.libXi
+            libxkbcommon
 
             # Build tools
             cmake
             pkg-config
-            # meson  # uncomment if you switch
+            meson
+            ninja
+
+            # Other stuff
+            gdb
           ];
 
           # Help CMake find Vulkan
@@ -65,6 +79,8 @@
           # Optional: Add Vulkan to LD_LIBRARY_PATH for runtime
           shellHook = ''
             export LD_LIBRARY_PATH=${pkgs.vulkan-loader}/lib:$LD_LIBRARY_PATH
+            #export VK_ICD_FILENAMES=${pkgs.mesa.drivers}/share/vulkan/icd.d/radeon_icd.*.json
+            export VK_LOADER_LAYERS_DISABLE=VK_LAYER_INTEL_nullhw
           '';
         };
       });

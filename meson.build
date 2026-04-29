@@ -24,7 +24,8 @@ vk_mem_alloc_dep = vk_mem_alloc_sub_proj.dependency('VulkanMemoryAllocator')
 
 sources = files(
   'src/main.cpp',
-  'src/vulkan_context.cpp'
+  'src/vulkan_context.cpp',
+  'src/swapchain.cpp'
 )
 
 executable('small',
@@ -37,5 +38,6 @@ executable('small',
     vk_mem_alloc_dep
   ],
   install: false,
+  cpp_args: ['-Wmissing-field-initializers'],
   override_options: ['cpp_std=c++23']
 )
