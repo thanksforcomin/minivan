@@ -62,30 +62,47 @@ namespace engine {
     VkQueue present_queue;
     VkQueue compute_queue;
     VkQueue transport_queue;
+
     uint32_t graphics_queue_family;
+    uint32_t present_queue_family;
+    uint32_t compute_queue_family;
+    uint32_t transport_queue_family;
     
     graphics_queue = vkb_device.get_queue(vkb::QueueType::graphics).value();
     graphics_queue_family =
       vkb_device.get_queue_index(vkb::QueueType::graphics).value();
+
     present_queue = vkb_device.get_queue(vkb::QueueType::present).value();
+    present_queue_family =
+      vkb_device.get_queue_index(vkb::QueueType::present).value();
+
     compute_queue = vkb_device.get_queue(vkb::QueueType::compute).value();
+    compute_queue_family =
+      vkb_device.get_queue_index(vkb::QueueType::compute).value();
+
     transport_queue = vkb_device.get_queue(vkb::QueueType::transfer).value();
+    transport_queue_family =
+      vkb_device.get_queue_index(vkb::QueueType::transfer).value();
 
     return VulkanContext(instance, surface, device, graphics_queue,
-                         present_queue, compute_queue, transport_queue, debug_messenger, graphics_queue_family);
+                         present_queue, compute_queue, transport_queue, debug_messenger, graphics_queue_family, present_queue_family, compute_queue_family, transport_queue_family);
   }
 
-  VulkanContext::VulkanContext(VkInstance instance, VkSurfaceKHR surface,
-                               VulkanDevice device, VkQueue graphics_queue,
-                               VkQueue present_queue, VkQueue compute_queue,
-                               VkQueue transport_queue,
-                               VkDebugUtilsMessengerEXT debug_messenger,
-                               uint32_t graphics_queue_family) noexcept
+  VulkanContext::VulkanContext(
+      VkInstance instance, VkSurfaceKHR surface, VulkanDevice device,
+      VkQueue graphics_queue, VkQueue present_queue, VkQueue compute_queue,
+      VkQueue transport_queue, VkDebugUtilsMessengerEXT debug_messenger,
+      uint32_t graphics_queue_family, uint32_t present_queue_family,
+      uint32_t compute_queue_family, uint32_t transport_queue_family) noexcept
       : instance_(instance), surface_(surface), device_(device),
         graphics_queue_(graphics_queue), present_queue_(present_queue),
         compute_queue_(compute_queue), transport_queue_(transport_queue),
         debug_messenger_(debug_messenger),
-        graphics_queue_family_(graphics_queue_family) {}
+        graphics_queue_family_(graphics_queue_family),
+        present_queue_family_(present_queue_family),
+        compute_queue_family_(compute_queue_family),
+        transport_queue_family_(transport_queue_family) {}
+  
 
   VulkanContext::VulkanContext(VulkanContext &&other) noexcept
       : instance_(other.instance_), surface_(other.surface_),

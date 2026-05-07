@@ -31,6 +31,9 @@ namespace engine {
     VkQueue transport_queue_;
     VkDebugUtilsMessengerEXT debug_messenger_;
     uint32_t graphics_queue_family_;
+    uint32_t present_queue_family_;
+    uint32_t compute_queue_family_;
+    uint32_t transport_queue_family_;
 
   public:
     static auto init(SDL_Window *window, const ContextOptions &options)
@@ -41,7 +44,8 @@ namespace engine {
                   VkQueue present_queue, VkQueue compute_queue,
                   VkQueue transport_queue,
                   VkDebugUtilsMessengerEXT debug_messenger,
-                  uint32_t graphics_queue_family) noexcept;
+                  uint32_t graphics_queue_family, uint32_t present_queue_family,
+                  uint32_t compute_queue_family, uint32_t transport_queue_family) noexcept;
 
     VulkanContext(const VulkanContext&) = delete;
     auto operator=(const VulkanContext&) -> VulkanContext& = delete;
