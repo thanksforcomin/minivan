@@ -32,10 +32,13 @@ namespace engine {
 
     ~CommandManager();
 
-    auto advance() -> void;
-    auto begin() -> Result<VkCommandBuffer>;
-    auto end() -> Result<void>;
-    auto get_current() -> Result<VkCommandBuffer>;
+    auto advance() noexcept -> void;
+    auto begin() noexcept -> Result<VkCommandBuffer>;
+    auto end() noexcept -> Result<void>;
+    auto get_current() noexcept -> Result<VkCommandBuffer>;
+
+  private:
+    auto cleanup() noexcept -> void;
     
   };
   

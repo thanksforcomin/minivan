@@ -63,13 +63,7 @@ namespace engine {
 
   auto CommandManager::operator=(CommandManager&& other) noexcept -> CommandManager& {
     if (this != &other) {
-      if (device_.device != VK_NULL_HANDLE) {
-        for (auto& frame : frames_) {
-          if (frame.pool != VK_NULL_HANDLE) {
-            vkDestroyCommandPool(device_.device, frame.pool, nullptr);
-          }
-        }
-      }
+      cleanup();
       
       frames_in_flight_ = other.frames_in_flight_;
       current_frame_ = other.current_frame_;
@@ -86,6 +80,47 @@ namespace engine {
     }
     return *this;
   }
-  
-  
+
+  CommandManager::~CommandManager() { cleanup(); }
+
+  inline auto CommandManager::advance() noexcept -> void {
+    current_frame_++;
+
+    vkResetCommandPool(device_.device, frames_[current_frame_].pool, 0);
+  }
+
+  auto CommandManager::begin() noexcept -> Result<VkCommandBuffer> {
+    VkCommandBufferBeginInfo begin_info {
+      .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+      .pNext = nullptr,
+      .flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
+    };
+
+    if (!vkBeginCommandBuffer(frames_[current_frame_].cmd_buffer,
+                              &begin_info)) [[unlikely]]
+      return std::unexpected("Failed to begin command capture");
+    
+    return frames_[current_frame_].cmd_buffer;
+  }
+
+  auto CommandManager::end() noexcept -> Result<void> {
+    if (!vkEndCommandBuffer(frames_[current_frame_].cmd_buffer)) [[unlikely]]
+      return std::unexpected("Failed to end command capture");
+
+    return {};
+  }
+
+  auto CommandManager::getCurrent() noexcept -> Result<VkCommandBuffer> {
+    return frames_[current_frame_].cmd_buffer;
+  }
+
+  auto CommandManager::cleanup() noexcept -> void {
+    if (device_.device != VK_NULL_HANDLE) {
+      for (auto& frame : frames_) {
+        if (frame.pool != VK_NULL_HANDLE) {
+          vkDestroyCommandPool(device_.device, frame.pool, nullptr);
+        }
+      }
+    }
+  }
 }
