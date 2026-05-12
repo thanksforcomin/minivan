@@ -47,7 +47,45 @@ namespace engine {
         frames_(std::forward<decltype(frames)>(frames)), device_(device),
         queue_family_index_(queue_family_index) {}
   
-  
+  CommandManager::CommandManager(CommandManager&& other) noexcept
+    : frames_in_flight_(other.frames_in_flight_),
+      current_frame_(other.current_frame_),
+      frames_(std::move(other.frames_)),
+      device_(other.device_),
+      queue_family_index_(other.queue_family_index_)
+  {
+    other.frames_in_flight_ = 0;
+    other.current_frame_ = 0;
+    other.device_.device = VK_NULL_HANDLE;
+    other.device_.phy_device = VK_NULL_HANDLE;
+    other.queue_family_index_ = 0;
+  }
+
+  auto CommandManager::operator=(CommandManager&& other) noexcept -> CommandManager& {
+    if (this != &other) {
+      if (device_.device != VK_NULL_HANDLE) {
+        for (auto& frame : frames_) {
+          if (frame.pool != VK_NULL_HANDLE) {
+            vkDestroyCommandPool(device_.device, frame.pool, nullptr);
+          }
+        }
+      }
+      
+      frames_in_flight_ = other.frames_in_flight_;
+      current_frame_ = other.current_frame_;
+      frames_ = std::move(other.frames_);
+      device_ = other.device_;
+      queue_family_index_ = other.queue_family_index_;
+      
+      other.frames_in_flight_ = 0;
+      other.current_frame_ = 0;
+      other.frames_.clear();
+      other.device_.device = VK_NULL_HANDLE;
+      other.device_.phy_device = VK_NULL_HANDLE;
+      other.queue_family_index_ = 0;
+    }
+    return *this;
+  }
   
   
 }
