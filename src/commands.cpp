@@ -84,7 +84,7 @@ namespace engine {
   CommandManager::~CommandManager() { cleanup(); }
 
   inline auto CommandManager::advance() noexcept -> void {
-    current_frame_++;
+    current_frame_ = (current_frame_ + 1) % frames_in_flight_;
 
     vkResetCommandPool(device_.device, frames_[current_frame_].pool, 0);
   }

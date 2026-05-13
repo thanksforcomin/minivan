@@ -35,7 +35,7 @@ namespace engine {
     auto advance() noexcept -> void;
     auto begin() noexcept -> Result<VkCommandBuffer>;
     auto end() noexcept -> Result<void>;
-    auto get_current() noexcept -> Result<VkCommandBuffer>;
+    auto getCurrent() noexcept -> Result<VkCommandBuffer>;
 
   private:
     auto cleanup() noexcept -> void;

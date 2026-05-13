@@ -1,12 +1,13 @@
 #pragma once
 
 #include "vulkan_context.hpp"
+#include <vulkan/vulkan_core.h>
 
 namespace engine {
   struct FrameSyncData {
-    VkSemaphore swapchain_semop;
-    VkSemaphore render_semop;
-    VkFence fence;
+    VkSemaphore swapchain_semop = VK_NULL_HANDLE;
+    VkSemaphore render_semop = VK_NULL_HANDLE;
+    VkFence fence = VK_NULL_HANDLE;
   };
 
   class SyncManager {
@@ -33,6 +34,8 @@ namespace engine {
 
     auto advance() noexcept -> void;
     auto current() noexcept -> FrameSyncData;
+
+  private:
+    auto cleanup() noexcept -> void;
   };
-  
 }
